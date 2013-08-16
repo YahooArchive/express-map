@@ -1,0 +1,52 @@
+{
+  "name": "express-map",
+  "version": "0.0.1",
+  "description": "Exposes server route configuration with the client side via JavaScript",
+  "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
+  "homepage": "https://github.com/yahoo/express-map",
+  "contributors": [
+    "alberto chan <imalberto@gmail.com>",
+    "Caridy Patino <caridy@gmail.com>"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": "",
+  "keywords": [
+    "config",
+    "data",
+    "expose",
+    "express",
+    "routes"
+  ],
+  "peerDependencies": {
+    "express": "3.x"
+  },
+  "devDependencies": {
+    "chai": "1.5.x",
+    "express": "3.x",
+    "express-annotations": "git://git.corp.yahoo.com/modown/express-annotations#master",
+    "express-params": "0.0.x",
+    "express-state": "git://github.com/yahoo/express-state#master",
+    "express3-handlebars": "0.5.x",
+    "istanbul": "*",
+    "jshint": "*",
+    "yui-lint": "*",
+    "mocha": "1.8.x",
+    "xunit-file": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/yahoo/expose-routes/issues"
+  },
+  "engines": {
+    "node": ">=0.8.x",
+    "npm": ">=1.2.10"
+  },
+  "scripts": {
+    "test": "node ./node_modules/istanbul/lib/cli.js cover -- ./node_modules/mocha/bin/_mocha tests/unit/*.js --reporter spec",
+    "unit": "node ./node_modules/.bin/mocha tests/unit/*.js --reporter spec",
+    "lint": "node ./node_modules/.bin/jshint --config ./node_modules/yui-lint/jshint.json ./*.js ./tests/unit/*.js"
+  },
+  "license": "BSD"
+}
