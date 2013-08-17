@@ -1,5 +1,3 @@
-
-
 /*jslint nomen:true, node:true*/
 /*global describe, beforeEach, afterEach, it*/
 
@@ -25,9 +23,7 @@ describe('test suite name', function () {
 
     describe('libmap', function () {
         it('should extend with extra methods', function () {
-            assert.isFunction(app.nameRoute);
-            assert.isFunction(app.getNamedRoutes);
-            assert.isFunction(app.getParams);
+            assert.isFunction(app.map);
             assert.isFunction(app.getRouteMap);
             assert.isFunction(app.exposeRoutes);
             assert.isFunction(app.response.exposeRoutes);
