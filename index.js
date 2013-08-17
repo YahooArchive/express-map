@@ -61,27 +61,25 @@ function getRouteMap(annotations) {
     }, {});
 }
 
-function exposeRoutes(routeMap, options) {
+function exposeRoutes(routeMap, namespace, local) {
     /* jshint validthis:true */
-    var app = this.app || this,
-        namespace, local;
+    var app = this.app || this;
 
-    if (!Array.isArray(routeMap)) {
-        options  = routeMap;
-        routeMap = null;
+    // Shift args for optional `routeMap` argument.
+    if (typeof routeMap === 'string') {
+        local     = namespace;
+        namespace = routePath;
+        routeMap  = null;
     }
 
-    // If no `routeMap` was specificed, use all mapped routes by default.
-    routeMap || (routeMap = app.getRouteMap());
-    options || (options = {});
-
-    // Defaults to Express State's settings values for this app.
-    namespace = options.namespace || app.get('state namespace'),
-    local     = options.local || app.get('state local');
+    // Setup default argument values.
+    routeMap  || (routeMap = app.getRouteMap());
+    namespace || (namespace = app.get('state namespace'));
+    local     || (local = app.get('state local'));
 
     return this.expose({
         routes: routeMap,
-        params: getRouteParams(routeMap, this.params)
+        params: getRouteParams(routeMap, app.params)
     }, namespace, local);
 }
 
