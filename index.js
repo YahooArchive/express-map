@@ -62,13 +62,13 @@ function getRouteMap(annotations) {
 }
 
 function exposeRoutes(routeMap, namespace, local) {
-    /* jshint validthis:true */
+    /* jshint validthis:true, expr:true */
     var app = this.app || this;
 
     // Shift args for optional `routeMap` argument.
     if (typeof routeMap === 'string') {
         local     = namespace;
-        namespace = routePath;
+        namespace = routeMap;
         routeMap  = null;
     }
 
