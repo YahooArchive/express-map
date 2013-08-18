@@ -1,6 +1,6 @@
 {
   "name": "express-map",
-  "version": "0.0.1",
+  "version": "0.0.1-beta-1",
   "description": "Exposes server route configuration with the client side via JavaScript",
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-map",
@@ -20,15 +20,17 @@
     "express",
     "routes"
   ],
+  "dependencies": {
+    "express-annotations": "*",
+    "express-state": "1.x"
+  },
   "peerDependencies": {
     "express": "3.x"
   },
   "devDependencies": {
     "chai": "1.5.x",
     "express": "3.x",
-    "express-annotations": "git://git.corp.yahoo.com/modown/express-annotations#master",
     "express-params": "0.0.x",
-    "express-state": "git://github.com/yahoo/express-state#master",
     "express3-handlebars": "0.5.x",
     "istanbul": "*",
     "jshint": "*",
