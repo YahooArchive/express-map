@@ -25,8 +25,7 @@ describe('test suite name', function () {
         it('should extend with extra methods', function () {
             assert.isFunction(app.map);
             assert.isFunction(app.getRouteMap);
-            assert.isFunction(app.exposeRoutes);
-            assert.isFunction(app.response.exposeRoutes);
+            assert.isFunction(app.getRouteParams);
 
             assert.isObject(app.params);
         });

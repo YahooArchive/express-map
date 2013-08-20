@@ -21,8 +21,7 @@
     "routes"
   ],
   "dependencies": {
-    "express-annotations": "*",
-    "express-state": "1.x"
+    "express-annotations": "*"
   },
   "peerDependencies": {
     "express": "3.x"
@@ -31,6 +30,7 @@
     "chai": "1.5.x",
     "express": "3.x",
     "express-params": "0.0.x",
+    "express-state": "1.x",
     "express3-handlebars": "0.5.x",
     "istanbul": "*",
     "jshint": "*",
