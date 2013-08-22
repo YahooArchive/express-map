@@ -1,24 +1,23 @@
 'use strict';
 
 var annotations = require('express-annotations'),
-    state       = require('express-state');
+    pathTo      = require('./lib/pathto');
 
 exports.extend = extendApp;
+exports.pathTo = pathTo;
 
 function extendApp(app) {
     if (app['@map']) { return app; }
 
-    // Add Express Annotations and Express State support to the `app`.
+    // Add Express Annotations support to the `app`.
     annotations.extend(app);
-    state.extend(app);
 
-    // Brand
+    // Brand.
     Object.defineProperty(app, '@map', {value: true});
 
-    app.map                   = mapRoute;
-    app.getRouteMap           = getRouteMap;
-    app.exposeRoutes          = exposeRoutes;
-    app.response.exposeRoutes = exposeRoutes;
+    app.map            = mapRoute;
+    app.getRouteMap    = getRouteMap;
+    app.getRouteParams = getRouteParams;
 
     // Sets up registry for simple param handlers that are either regular
     // expressions or basic, non-middleware functions. These param handlers are
@@ -29,6 +28,8 @@ function extendApp(app) {
     return app;
 }
 
+// TODO: Should this accept an object of mappings? If so what should be the key,
+// and what should be the value?
 function mapRoute(routePath, name) {
     /* jshint validthis:true */
     return this.annotate(routePath, {name: name});
@@ -61,48 +62,16 @@ function getRouteMap(annotations) {
     }, {});
 }
 
-function exposeRoutes(routeMap, namespace, local) {
+function getRouteParams(routeMap) {
     /* jshint validthis:true, expr:true */
-    var app = this.app || this;
-
-    // Shift args for optional `routeMap` argument.
-    if (typeof routeMap === 'string') {
-        local     = namespace;
-        namespace = routeMap;
-        routeMap  = null;
-    }
-
-    // Setup default argument values.
-    routeMap  || (routeMap = app.getRouteMap());
-    namespace || (namespace = app.get('state namespace'));
-    local     || (local = app.get('state local'));
-
-    return this.expose({
-        routes: routeMap,
-        params: getRouteParams(routeMap, app.params)
-    }, namespace, local);
-}
-
-function registerParam(name, handler) {
-    /*jshint validthis:true */
-
-    // This unobtrusive params bookkeeper stores a reference to any param
-    // handlers that are regular express or basic, non-middleware functions. It
-    // is assumed that the Express Params package is the next param registration
-    // function to be called.
-    if ((handler instanceof RegExp) || handler.length < 3) {
-        this.params[name] = handler;
-    }
-}
-
-// -- Helper Functions ---------------------------------------------------------
-
-function getRouteParams(routeMap, params) {
-    var paramsMap = {};
+    var params    = this.params,
+        paramsMap = {};
 
     if (!params || !Object.keys(params).length) {
         return paramsMap;
     }
+
+    routeMap || (routeMap = this.getRouteMap());
 
     // Creates a param -> handler map for the params used in the specified
     // `routeMap` which have handlers.
@@ -120,4 +89,16 @@ function getRouteParams(routeMap, params) {
 
         return map;
     }, paramsMap);
+}
+
+function registerParam(name, handler) {
+    /*jshint validthis:true */
+
+    // This unobtrusive params bookkeeper stores a reference to any param
+    // handlers that are regular express or basic, non-middleware functions. It
+    // is assumed that the Express Params package is the next param registration
+    // function to be called.
+    if ((handler instanceof RegExp) || handler.length < 3) {
+        this.params[name] = handler;
+    }
 }
