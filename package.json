@@ -1,6 +1,6 @@
 {
   "name": "express-map",
-  "version": "0.0.1-beta-2",
+  "version": "0.0.1-beta-3",
   "description": "Exposes server route configuration with the client side via JavaScript",
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-map",
