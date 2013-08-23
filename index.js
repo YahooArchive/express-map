@@ -45,19 +45,29 @@ function getRouteMap(annotations) {
     // Gather all mapped/named routes that have the specified `annotations`.
     var routes = this.findAll(annotations.concat('name'));
 
-    // Creates a mapping of name -> route configuration object used for
-    // serialization. The route objects are shallow copies of a route's primary
-    // data.
-    return routes.map(function (route) {
-        return {
+    // Creates a mapping of name -> route object. The route objects are shallow
+    // copies of a route's data plus the set of HTTP methods to which the
+    // resource will respond.
+    return routes.reduce(function (map, route) {
+        var name = route.annotations.name,
+            entry;
+
+        // Route must have a name to be mapped by a name.
+        if (!name) { return map; }
+
+        // Find or create the entry in the route map for the current `route`.
+        entry = map[name] || (map[name] = {
             path       : route.path,
             keys       : route.keys,
             regexp     : route.regexp,
-            annotations: route.annotations
-        };
-    }).reduce(function (map, route) {
-        var name = route.annotations.name;
-        if (name) { map[name] = route; }
+            annotations: route.annotations,
+            methods    : {}
+        });
+
+        // Update the set of HTTP methods with this route's the verb in which
+        // this route was registered.
+        entry.methods[route.method] = true;
+
         return map;
     }, {});
 }
