@@ -1,7 +1,9 @@
 'use strict';
 
 var annotations = require('express-annotations'),
-    pathTo      = require('./lib/pathto');
+    methods     = require('methods'),
+
+    pathTo = require('./lib/pathto');
 
 exports.extend = extendApp;
 exports.pathTo = pathTo;
@@ -32,41 +34,64 @@ function extendApp(app) {
 // and what should be the value?
 function mapRoute(routePath, name) {
     /* jshint validthis:true */
-    return this.annotate(routePath, {name: name});
+    var annotations = this.annotations[routePath],
+        names       = ((annotations && annotations.names) || []).concat(name);
+
+    name = (annotations && annotations.name) ||
+            Array.isArray(name) ? name[0] : name;
+
+    return this.annotate(routePath, {
+        // Annotate with a singular name, either existing or new.
+        name: name,
+
+        // Annotate with a unique set of names.
+        names: Object.keys(names.reduce(function (unique, name) {
+            if (name) { unique[name] = true; }
+            return unique;
+        }, {}))
+    });
 }
 
 function getRouteMap(annotations) {
     /* jshint validthis:true */
-
     if (!Array.isArray(annotations)) {
         annotations = [].slice.call(arguments);
     }
 
-    // Gather all mapped/named routes that have the specified `annotations`.
-    var routes = this.findAll(annotations.concat('name'));
+    // Gather all mapped/named routePaths that have the specified `annotations`.
+    var appAnnotations = this.annotations,
+        routes         = this.findAll(annotations.concat('name'));
 
     // Creates a mapping of name -> route object. The route objects are shallow
-    // copies of a route's data plus the set of HTTP methods to which the
-    // resource will respond.
-    return routes.reduce(function (map, route) {
-        var name = route.annotations.name,
-            entry;
+    // copies of a route's primary metadata.
+    return methods.reduce(function (map, method) {
+        var methodRoutes = routes[method];
 
-        // Route must have a name to be mapped by a name.
-        if (!name) { return map; }
+        if (!methodRoutes) { return map; }
 
-        // Find or create the entry in the route map for the current `route`.
-        entry = map[name] || (map[name] = {
-            path       : route.path,
-            keys       : route.keys,
-            regexp     : route.regexp,
-            annotations: route.annotations,
-            methods    : {}
+        methodRoutes.forEach(function (route) {
+            var pathAnnotations = appAnnotations[route.path],
+                name            = pathAnnotations.name,
+                entry;
+
+            // Return early if the route has no canonical `name`, or if that
+            // name has already been mapped, in which case none of its `names`
+            // will be mapped.
+            if (!name || map[name]) { return; }
+
+            // The entry that represents the route in the route map.
+            entry = {
+                path       : route.path,
+                keys       : route.keys,
+                regexp     : route.regexp,
+                annotations: appAnnotations[route.path]
+            };
+
+            // Map the route to all of its `names`.
+            pathAnnotations.names.forEach(function (name) {
+                map[name] = entry;
+            });
         });
-
-        // Update the set of HTTP methods with this route's the verb in which
-        // this route was registered.
-        entry.methods[route.method] = true;
 
         return map;
     }, {});
