@@ -1,6 +1,6 @@
 {
   "name": "express-map",
-  "version": "0.0.1-beta-3",
+  "version": "0.0.1",
   "description": "Exposes server route configuration with the client side via JavaScript",
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-map",
@@ -12,7 +12,6 @@
   "scripts": {
     "test": "npm test"
   },
-  "repository": "",
   "keywords": [
     "config",
     "data",
@@ -21,8 +20,8 @@
     "routes"
   ],
   "dependencies": {
-    "express-annotations": "*",
-    "methods": "0.0.x"
+    "express-annotations": "~0.0.1",
+    "methods": "~0.0.1"
   },
   "peerDependencies": {
     "express": "3.x"
@@ -39,8 +38,12 @@
     "mocha": "1.8.x",
     "xunit-file": "*"
   },
+  "repository": {
+    "type": "git",
+    "url" : "git://github.com/yahoo/express-map.git"
+  },
   "bugs": {
-    "url": "https://github.com/yahoo/expose-routes/issues"
+    "url": "https://github.com/yahoo/express-map/issues"
   },
   "engines": {
     "node": ">=0.8.x",
