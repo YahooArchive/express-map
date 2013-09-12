@@ -38,7 +38,7 @@ function mapRoute(routePath, name) {
         names       = ((annotations && annotations.names) || []).concat(name);
 
     name = (annotations && annotations.name) ||
-            Array.isArray(name) ? name[0] : name;
+            (Array.isArray(name) ? name[0] : name);
 
     return this.annotate(routePath, {
         // Annotate with a singular name, either existing or new.

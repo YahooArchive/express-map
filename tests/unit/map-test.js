@@ -29,6 +29,14 @@ describe('test suite name', function () {
 
             assert.isObject(app.params);
         });
+        it('should extend with multiple names', function () {
+
+            app.map('/foo', 'foo');
+            app.map('/foo', 'get#foo');
+
+            assert.strictEqual('foo', app.annotations['/foo'].name, 'wrong name');
+            assert.strictEqual(2, app.annotations['/foo'].names.length, 'wrong # of names');
+        });
     });
 
 });
