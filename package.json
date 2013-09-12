@@ -9,9 +9,6 @@
     "Caridy Patino <caridy@gmail.com>"
   ],
   "main": "index.js",
-  "scripts": {
-    "test": "npm test"
-  },
   "keywords": [
     "config",
     "data",
@@ -34,7 +31,6 @@
     "express3-handlebars": "0.5.x",
     "istanbul": "*",
     "jshint": "*",
-    "yui-lint": "*",
     "mocha": "1.8.x",
     "xunit-file": "*"
   },
@@ -50,9 +46,9 @@
     "npm": ">=1.2.10"
   },
   "scripts": {
-    "test": "node ./node_modules/istanbul/lib/cli.js cover -- ./node_modules/mocha/bin/_mocha tests/unit/*.js --reporter spec",
-    "unit": "node ./node_modules/.bin/mocha tests/unit/*.js --reporter spec",
-    "lint": "node ./node_modules/.bin/jshint --config ./node_modules/yui-lint/jshint.json ./*.js ./tests/unit/*.js"
+    "test": "istanbul cover -- node_modules/.bin/_mocha tests/unit/*.js --reporter spec",
+    "unit": "mocha tests/unit/*.js --reporter spec",
+    "lint": "jshint {.,tests/unit}/*.js*"
   },
   "license": "BSD"
 }
