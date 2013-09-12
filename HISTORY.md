@@ -1,8 +1,8 @@
 Express Map Change History
 ==========================
 
-NEXT
-----
+0.0.2 (2013-09-12)
+------------------
 
 * __[!]__ Fixed issue where "canonical" `name` annotation was not being applied
   correctly. ([#2][]: @imalberto)
