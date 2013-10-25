@@ -54,13 +54,29 @@ function mapRoute(routePath, name) {
 
 function getRouteMap(annotations) {
     /* jshint validthis:true */
-    if (!Array.isArray(annotations)) {
-        annotations = [].slice.call(arguments);
+
+    // Support a function, single array of annotations, or var-args.
+    if (typeof annotations === 'function') {
+        // Replaces an `annotations` function with a wrapper that is bound to
+        // the original function which is only called for paths that have been
+        // annotated with a `name`.
+        annotations = function (pathAnnotations) {
+            if (pathAnnotations.hasOwnProperty('name')) {
+                return this.apply(null, arguments);
+            }
+        }.bind(annotations);
+    } else {
+        if (!Array.isArray(annotations)) {
+            annotations = [].slice.call(arguments);
+        }
+
+        // Adds the requirement that a path must have a `name` annotation.
+        annotations.concat('name');
     }
 
     // Gather all mapped/named routePaths that have the specified `annotations`.
     var appAnnotations = this.annotations,
-        routes         = this.findAll(annotations.concat('name'));
+        routes         = this.findAll(annotations);
 
     // Creates a mapping of name -> route object. The route objects are shallow
     // copies of a route's primary metadata.
