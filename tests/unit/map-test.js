@@ -53,7 +53,7 @@ describe('Express Map', function () {
             app.get('/', function () { /* no-op for testing purposes */ });
 
             expect(annotations['/'].name).to.equal('home');
-            expect(annotations['/'].names).to.contain('home', 'index');
+            expect(annotations['/'].aliases).to.contain('home', 'index');
         })
     });
 
