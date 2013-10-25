@@ -23,6 +23,17 @@ describe('Express Map', function () {
         expect(app.params).to.be.an('object');
     });
 
+    it('should return the app as is if the brand is already there', function () {
+        var app = { '@map': true, 'mock': true };
+        expmap.extend(app);
+
+        expect(app.map).to.be.undefined;
+        expect(app.getRouteMap).to.be.undefined;
+        expect(app.getRouteParams).to.be.undefined;
+
+        expect(app.mock).to.be.true;
+    });
+
     describe('#map', function () {
         it('should create a `name` annotation on the route with the given name', function () {
             var annotations = app.annotations;
@@ -94,6 +105,28 @@ describe('Express Map', function () {
             expect(Object.keys(routeMap)).to.have.length(2);
             expect(routeMap).to.contain.keys('blog#index', 'blog#show');
         });
+
+        it('should contain the correct properties inside each route', function () {
+            var routeMap  = app.getRouteMap(),
+                userRoute = routeMap['users#show'];
+
+            expect(userRoute).to.contain.keys('path', 'keys', 'regexp', 'annotations');
+            expect(userRoute.path).to.be.a('string');
+            expect(userRoute.keys).to.be.an('array');
+            expect(userRoute.regexp).to.be.a('regexp');
+            expect(userRoute.annotations).to.be.an('object');
+        });
+
+        it('should ignore a route whose name has already been mapped', function () {
+            var routeMap, homeRoute;
+            app.map('/home', 'home');
+            app.get('/home', function () { /* no-op for testing */ });
+
+            routeMap  = app.getRouteMap();
+            homeRoute = routeMap['home'];
+
+            expect(homeRoute.path).to.equal('/');
+        });
     });
 
     describe('#getRouteParams', function () {
@@ -150,6 +183,13 @@ describe('Express Map', function () {
                 });
 
             expect(userPath).to.equal('/users/clarle');
+        });
+
+        it('should provide an empty string if the route doesn\'t exist', function () {
+            var routeMap = app.getRouteMap(),
+                pathTo   = expmap.pathTo(routeMap);
+
+            expect(pathTo('nowhere')).to.equal(''); 
         });
     })
 });
