@@ -35,7 +35,7 @@ function extendApp(app) {
 function mapRoute(routePath, name) {
     /* jshint validthis:true */
     var annotations = this.annotations[routePath],
-        aliases       = ((annotations && annotations.aliases) || []).concat(name);
+        aliases     = ((annotations && annotations.aliases) || []).concat(name);
 
     name = (annotations && annotations.name) ||
             (Array.isArray(name) ? name[0] : name);
@@ -45,8 +45,8 @@ function mapRoute(routePath, name) {
         name: name,
 
         // Annotate with a unique set of aliases.
-        aliases: Object.keys(aliases.reduce(function (unique, name) {
-            if (name) { unique[name] = true; }
+        aliases: Object.keys(aliases.reduce(function (unique, alias) {
+            if (alias) { unique[alias] = true; }
             return unique;
         }, {}))
     });
@@ -88,8 +88,8 @@ function getRouteMap(annotations) {
             };
 
             // Map the route to all of its `aliases`.
-            pathAnnotations.aliases.forEach(function (name) {
-                map[name] = entry;
+            pathAnnotations.aliases.forEach(function (alias) {
+                map[alias] = entry;
             });
         });
 
