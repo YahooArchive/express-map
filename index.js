@@ -35,7 +35,7 @@ function extendApp(app) {
 function mapRoute(routePath, name) {
     /* jshint validthis:true */
     var annotations = this.annotations[routePath],
-        names       = ((annotations && annotations.names) || []).concat(name);
+        aliases       = ((annotations && annotations.aliases) || []).concat(name);
 
     name = (annotations && annotations.name) ||
             (Array.isArray(name) ? name[0] : name);
@@ -44,8 +44,8 @@ function mapRoute(routePath, name) {
         // Annotate with a singular name, either existing or new.
         name: name,
 
-        // Annotate with a unique set of names.
-        names: Object.keys(names.reduce(function (unique, name) {
+        // Annotate with a unique set of aliases.
+        aliases: Object.keys(aliases.reduce(function (unique, name) {
             if (name) { unique[name] = true; }
             return unique;
         }, {}))
@@ -75,7 +75,7 @@ function getRouteMap(annotations) {
                 entry;
 
             // Return early if the route has no canonical `name`, or if that
-            // name has already been mapped, in which case none of its `names`
+            // name has already been mapped, in which case none of its `aliases`
             // will be mapped.
             if (!name || map[name]) { return; }
 
@@ -87,8 +87,8 @@ function getRouteMap(annotations) {
                 annotations: appAnnotations[route.path]
             };
 
-            // Map the route to all of its `names`.
-            pathAnnotations.names.forEach(function (name) {
+            // Map the route to all of its `aliases`.
+            pathAnnotations.aliases.forEach(function (name) {
                 map[name] = entry;
             });
         });
