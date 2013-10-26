@@ -5,8 +5,10 @@
   "author": "Eric Ferraiuolo <eferraiuolo@gmail.com>",
   "homepage": "https://github.com/yahoo/express-map",
   "contributors": [
-    "alberto chan <imalberto@gmail.com>",
+    "Alberto Chan <imalberto@gmail.com>",
     "Caridy Patino <caridy@gmail.com>"
+    "Clarence Leung <cleung0@gmail.com>",
+    "Isao Yagi <isao.yagi@gmail.com>"
   ],
   "main": "index.js",
   "keywords": [
@@ -14,6 +16,7 @@
     "data",
     "expose",
     "express",
+    "modown",
     "routes"
   ],
   "dependencies": {
