@@ -2,6 +2,7 @@
 
 var annotations = require('express-annotations'),
     methods     = require('methods'),
+    util        = require('util'),
 
     pathTo = require('./lib/pathto');
 
@@ -45,10 +46,7 @@ function mapRoute(routePath, name) {
         name: name,
 
         // Annotate with a unique set of names.
-        names: Object.keys(names.reduce(function (unique, name) {
-            if (name) { unique[name] = true; }
-            return unique;
-        }, {}))
+        names: getUniqueNames(names)
     });
 }
 
@@ -133,7 +131,16 @@ function registerParam(name, handler) {
     // handlers that are regular express or basic, non-middleware functions. It
     // is assumed that the Express Params package is the next param registration
     // function to be called.
-    if ((handler instanceof RegExp) || handler.length < 3) {
+    if (util.isRegExp(handler) || handler.length < 3) {
         this.params[name] = handler;
     }
+}
+
+// -- Helper Functions ---------------------------------------------------------
+
+function getUniqueNames(names) {
+    return Object.keys(names.reduce(function (unique, name) {
+        if (name) { unique[name] = true; }
+        return unique;
+    }, {}));
 }
