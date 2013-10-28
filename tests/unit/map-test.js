@@ -1,4 +1,4 @@
-/*jslint nomen:true, node:true*/
+/*jslint nomen:true, node:true, expr:true*/
 /*global describe, beforeEach, afterEach, it*/
 
 'use strict';
@@ -14,6 +14,10 @@ describe('Express Map', function () {
         // Create an Express app instance, and extend it
         app = express();
         expmap.extend(app);
+    });
+
+    afterEach(function () {
+        app = null;
     });
 
     it('should extend the Express app with extra methods', function () {
@@ -54,7 +58,7 @@ describe('Express Map', function () {
 
             expect(annotations['/'].name).to.equal('home');
             expect(annotations['/'].aliases).to.contain('home', 'index');
-        })
+        });
     });
 
     beforeEach(function () {
@@ -73,7 +77,7 @@ describe('Express Map', function () {
 
         // Set up and annotate a set of routes with a specific section
         ['/', '/users/', '/users/:user'].forEach(function (route) {
-            app.get(route, render)
+            app.get(route, render);
             app.annotate(route, { section: 'app' });
         });
 
@@ -85,7 +89,7 @@ describe('Express Map', function () {
         // Set up and add additional route annotations that don't need mapping
         ['/privacy', '/copyright'].forEach(function (route) {
             app.get(route, render);
-            app.annotate(route, { section: 'legal' })
+            app.annotate(route, { section: 'legal' });
         });
     });
 
@@ -101,7 +105,7 @@ describe('Express Map', function () {
 
         it('should return the routes with the specified annotations', function () {
             var routeMap = app.getRouteMap({ section: 'blog' });
-            
+
             expect(Object.keys(routeMap)).to.have.length(2);
             expect(routeMap).to.contain.keys('blog#index', 'blog#show');
         });
@@ -123,7 +127,7 @@ describe('Express Map', function () {
             app.get('/home', function () { /* no-op for testing */ });
 
             routeMap  = app.getRouteMap();
-            homeRoute = routeMap['home'];
+            homeRoute = routeMap.home;
 
             expect(homeRoute.path).to.equal('/');
         });
@@ -189,7 +193,7 @@ describe('Express Map', function () {
             var routeMap = app.getRouteMap(),
                 pathTo   = expmap.pathTo(routeMap);
 
-            expect(pathTo('nowhere')).to.equal(''); 
+            expect(pathTo('nowhere')).to.equal('');
         });
-    })
+    });
 });
