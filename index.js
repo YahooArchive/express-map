@@ -1,21 +1,17 @@
 'use strict';
 
-var annotations = require('express-annotations'),
-    methods     = require('methods'),
+var annotations   = require('express-annotations'),
+    extendExpress = require('express-extend'),
+    methods       = require('methods'),
 
     pathTo = require('./lib/pathto');
 
-exports.extend = extendApp;
+exports.extend = extendExpress('@map', exports, extendApp);
 exports.pathTo = pathTo;
 
 function extendApp(app) {
-    if (app['@map']) { return app; }
-
     // Add Express Annotations support to the `app`.
     annotations.extend(app);
-
-    // Brand.
-    Object.defineProperty(app, '@map', {value: true});
 
     app.map            = mapRoute;
     app.getRouteMap    = getRouteMap;
@@ -26,8 +22,6 @@ function extendApp(app) {
     // exposed along with the exposed routes.
     app.params = {};
     app.param(registerParam.bind(app));
-
-    return app;
 }
 
 // TODO: Should this accept an object of mappings? If so what should be the key,
