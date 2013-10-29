@@ -90,7 +90,7 @@ function getRouteMap(annotations) {
                 annotations: appAnnotations[route.path]
             };
 
-            // Map the route to all of its `aliases`.
+            // Map the route to all of its `aliases` which includes its `name`.
             pathAnnotations.aliases.forEach(function (alias) {
                 map[alias] = entry;
             });
