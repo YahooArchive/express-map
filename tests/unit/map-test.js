@@ -239,7 +239,7 @@ describe('Express Map', function () {
             it('should support route `keys` as a String[]', function () {
                 var routeMap = app.getRouteMap(),
                     pathTo   = expmap.pathTo(routeMap),
-                    userPath = pathTo('users#show', {user: 'clarle'});
+                    userPath;
 
                 // Mutate each route's `keys` into an array of strings.
                 Object.keys(routeMap).forEach(function (name) {
@@ -249,6 +249,8 @@ describe('Express Map', function () {
                         return key.name;
                     });
                 });
+
+                userPath = pathTo('users#show', {user: 'clarle'});
 
                 expect(userPath).to.equal('/users/clarle');
             });
