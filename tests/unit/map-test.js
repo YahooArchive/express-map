@@ -38,162 +38,202 @@ describe('Express Map', function () {
         expect(app.mock).to.be.true;
     });
 
-    describe('#map', function () {
-        it('should create a `name` annotation on the route with the given name', function () {
-            var annotations = app.annotations;
+    describe('Route Setup Methods', function () {
+        describe('#map', function () {
+            it('should create a `name` annotation on the route with the given name', function () {
+                var annotations = app.annotations;
 
-            app.map('/app', 'application');
-            app.get('/app', function () { /* no-op for testing purposes */ });
+                app.map('/app', 'application');
+                app.get('/app', function () { /* no-op for testing purposes */ });
 
-            expect(annotations['/app'].name).to.equal('application');
+                expect(annotations['/app'].name).to.equal('application');
+            });
+
+            it('should create aliases on the same route if called multiple times', function () {
+                var annotations = app.annotations;
+
+                app.map('/', 'home');
+                app.map('/', 'index');
+
+                app.get('/', function () { /* no-op for testing purposes */ });
+
+                expect(annotations['/'].name).to.equal('home');
+                expect(annotations['/'].aliases).to.contain('home', 'index');
+            });
+
+            it('should create a canonical name and aliases from a passed-in array', function () {
+                var annotations = app.annotations;
+
+                app.map('/', ['home', 'index', null, 'main']);
+                app.get('/', function () { /* no-op for testing purposes */ });
+
+                expect(annotations['/'].name).to.equal('home');
+
+                // Falsy name values should be ignored by `express-map`
+                expect(annotations['/'].aliases).to.contain('home', 'index', 'main');
+            });
         });
+    });
 
-        it('should create aliases on the same route if called multiple times', function () {
-            var annotations = app.annotations;
+    describe('Route Fetching Methods', function () {
+        beforeEach(function () {
+            var render = function () { /* no-op for testing purposes */ };
 
+            // Map routes to multiple aliases
             app.map('/', 'home');
             app.map('/', 'index');
+            app.map('/', 'main');
 
-            app.get('/', function () { /* no-op for testing purposes */ });
+            // Map routes to unique names
+            app.map('/users/', 'users#index');
+            app.map('/users/:user', 'users#show');
 
-            expect(annotations['/'].name).to.equal('home');
-            expect(annotations['/'].aliases).to.contain('home', 'index');
-        });
-    });
+            app.map('/blog/', 'blog#index');
+            app.map('/blog/:post', 'blog#show');
 
-    beforeEach(function () {
-        var render = function () { /* no-op for testing purposes */ };
+            // Set up and annotate a set of routes with a specific section
+            ['/', '/users/', '/users/:user'].forEach(function (route) {
+                app.get(route, render);
+                app.annotate(route, { section: 'app' });
+            });
 
-        // Map routes to multiple aliases
-        app.map('/', 'home');
-        app.map('/', 'index');
-        app.map('/', 'main');
+            ['/blog/', '/blog/:post'].forEach(function (route) {
+                app.get(route, render);
+                app.annotate(route, { section: 'blog' });
+            });
 
-        // Map routes to unique names
-        app.map('/users/', 'users#index');
-        app.map('/users/:user', 'users#show');
-        app.map('/blog/', 'blog#index');
-        app.map('/blog/:post', 'blog#show');
+            // Set up and add additional route annotations that don't need mapping
+            ['/privacy', '/copyright'].forEach(function (route) {
+                app.get(route, render);
+                app.annotate(route, { section: 'legal' });
+            });
 
-        // Set up and annotate a set of routes with a specific section
-        ['/', '/users/', '/users/:user'].forEach(function (route) {
-            app.get(route, render);
-            app.annotate(route, { section: 'app' });
-        });
-
-        ['/blog/', '/blog/:post'].forEach(function (route) {
-            app.get(route, render);
-            app.annotate(route, { section: 'blog' });
+            ['/', '/users/', '/blog/'].forEach(function (route) {
+                app.annotate(route, { index: true });
+            });
         });
 
-        // Set up and add additional route annotations that don't need mapping
-        ['/privacy', '/copyright'].forEach(function (route) {
-            app.get(route, render);
-            app.annotate(route, { section: 'legal' });
-        });
-    });
+        describe('#getRouteMap', function () {
+            it('should return all named routes if no annotations are passed', function () {
+                var routeMap = app.getRouteMap();
 
-    describe('#getRouteMap', function () {
-        it('should return all named routes if no annotations are passed', function () {
-            var routeMap = app.getRouteMap();
+                expect(Object.keys(routeMap)).to.have.length(7);
+                expect(routeMap).to.contain.keys('home', 'index', 'main');
+                expect(routeMap).to.contain.keys('users#index', 'users#show');
+                expect(routeMap).to.contain.keys('blog#index', 'blog#show');
+            });
 
-            expect(Object.keys(routeMap)).to.have.length(7);
-            expect(routeMap).to.contain.keys('home', 'index', 'main');
-            expect(routeMap).to.contain.keys('users#index', 'users#show');
-            expect(routeMap).to.contain.keys('blog#index', 'blog#show');
-        });
+            it('should return the routes with the specified annotations', function () {
+                var routeMap = app.getRouteMap({ section: 'blog' });
+                
+                expect(Object.keys(routeMap)).to.have.length(2);
+                expect(routeMap).to.contain.keys('blog#index', 'blog#show');
+            });
 
-        it('should return the routes with the specified annotations', function () {
-            var routeMap = app.getRouteMap({ section: 'blog' });
+            it('should return the routes with an array of annotations', function () {
+                var routeMap = app.getRouteMap(['index', { section: 'blog' }]);
 
-            expect(Object.keys(routeMap)).to.have.length(2);
-            expect(routeMap).to.contain.keys('blog#index', 'blog#show');
-        });
+                expect(Object.keys(routeMap)).to.have.length(1);
+                expect(routeMap).to.contain.key('blog#index');
+            });
 
-        it('should contain the correct properties inside each route', function () {
-            var routeMap  = app.getRouteMap(),
-                userRoute = routeMap['users#show'];
+            it('should contain the correct properties inside each route', function () {
+                var routeMap  = app.getRouteMap(),
+                    userRoute = routeMap['users#show'];
 
-            expect(userRoute).to.contain.keys('path', 'keys', 'regexp', 'annotations');
-            expect(userRoute.path).to.be.a('string');
-            expect(userRoute.keys).to.be.an('array');
-            expect(userRoute.regexp).to.be.a('regexp');
-            expect(userRoute.annotations).to.be.an('object');
-        });
+                expect(userRoute).to.contain.keys('path', 'keys', 'regexp', 'annotations');
+                expect(userRoute.path).to.be.a('string');
+                expect(userRoute.keys).to.be.an('array');
+                expect(userRoute.regexp).to.be.a('regexp');
+                expect(userRoute.annotations).to.be.an('object');
+            });
 
-        it('should ignore a route whose name has already been mapped', function () {
-            var routeMap, homeRoute;
-            app.map('/home', 'home');
-            app.get('/home', function () { /* no-op for testing */ });
+            it('should ignore a route whose name has already been mapped', function () {
+                var routeMap, homeRoute;
+                app.map('/home', 'home');
+                app.get('/home', function () { /* no-op for testing */ });
 
-            routeMap  = app.getRouteMap();
-            homeRoute = routeMap.home;
+                routeMap  = app.getRouteMap();
+                homeRoute = routeMap.home;
 
-            expect(homeRoute.path).to.equal('/');
-        });
-    });
-
-    describe('#getRouteParams', function () {
-        it('should return nothing if there are no parameter handlers', function () {
-            var paramMap = app.getRouteParams();
-
-            expect(paramMap).to.be.empty;
+                expect(homeRoute.path).to.equal('/');
+            });
         });
 
-        it('should return a map of all parameter handlers if no route map is passed', function () {
-            app.param('user', function () { /* no-op for testing */ });
-            app.param('post', function () { /* no-op for testing */ });
+        describe('#getRouteParams', function () {
+            it('should return an empty object if there are no parameter handlers', function () {
+                var paramMap = app.getRouteParams();
 
-            var paramMap = app.getRouteParams();
+                expect(paramMap).to.be.empty;
+            });
 
-            expect(Object.keys(paramMap)).to.have.length(2);
-            expect(paramMap).to.contain.keys('user', 'post');
-        });
+            it('should return a map of all parameter handlers if no route map is passed', function () {
+                app.param('user', function () { /* no-op for testing */ });
+                app.param('post', function () { /* no-op for testing */ });
 
-        it('should return a map of only the parameter handlers of the filtered map', function () {
-            app.param('user', function () { /* no-op for testing */ });
-            app.param('post', function () { /* no-op for testing */ });
+                var paramMap = app.getRouteParams();
 
-            var routeMap = app.getRouteMap({ section: 'blog' }),
-                paramMap = app.getRouteParams(routeMap);
+                expect(Object.keys(paramMap)).to.have.length(2);
+                expect(paramMap).to.contain.keys('user', 'post');
+            });
 
-            expect(Object.keys(paramMap)).to.have.length(1);
-            expect(paramMap).to.contain.keys('post');
-        });
-    });
+            it('should return a map of only the parameter handlers of the filtered map', function () {
+                app.param('user', function () { /* no-op for testing */ });
+                app.param('post', function () { /* no-op for testing */ });
 
-    describe('#pathTo', function () {
-        it('should return a function', function () {
-            var routeMap = app.getRouteMap();
+                var routeMap = app.getRouteMap({ section: 'blog' }),
+                    paramMap = app.getRouteParams(routeMap);
 
-            expect(expmap.pathTo(routeMap)).to.be.a('function');
-        });
+                expect(Object.keys(paramMap)).to.have.length(1);
+                expect(paramMap).to.contain.keys('post');
+            });
 
-        it('should provide the correct paths given the abstracted name', function () {
-            var routeMap = app.getRouteMap(),
-                pathTo   = expmap.pathTo(routeMap);
-
-            expect(pathTo('home')).to.equal('/');
-            expect(pathTo('index')).to.equal('/');
-
-            expect(pathTo('users#index')).to.equal('/users/');
-        });
-
-        it('should provide the correct paths given the name and a context', function () {
-            var routeMap = app.getRouteMap(),
-                pathTo   = expmap.pathTo(routeMap),
-                userPath = pathTo('users#show', {
-                    user: 'clarle'
+            it('should not register parameters written in the middleware-style', function () {
+                app.param('user', function (req, res, next, id) {
+                    req.user = { user: id };
+                    next();
                 });
 
-            expect(userPath).to.equal('/users/clarle');
+                var paramMap = app.getRouteParams();
+
+                expect(paramMap).to.be.an('object');
+                expect(paramMap).to.be.empty;
+            });
         });
 
-        it('should provide an empty string if the route doesn\'t exist', function () {
-            var routeMap = app.getRouteMap(),
-                pathTo   = expmap.pathTo(routeMap);
+        describe('#pathTo', function () {
+            it('should return a function', function () {
+                var routeMap = app.getRouteMap();
 
-            expect(pathTo('nowhere')).to.equal('');
+                expect(expmap.pathTo(routeMap)).to.be.a('function');
+            });
+
+            it('should provide the correct paths given the abstracted name', function () {
+                var routeMap = app.getRouteMap(),
+                    pathTo   = expmap.pathTo(routeMap);
+
+                expect(pathTo('home')).to.equal('/');
+                expect(pathTo('index')).to.equal('/');
+
+                expect(pathTo('users#index')).to.equal('/users/');
+            });
+
+            it('should provide the correct paths given the name and a context', function () {
+                var routeMap = app.getRouteMap(),
+                    pathTo   = expmap.pathTo(routeMap),
+                    userPath = pathTo('users#show', {
+                        user: 'clarle'
+                    });
+
+                expect(userPath).to.equal('/users/clarle');
+            });
+
+            it('should provide an empty string if the route doesn\'t exist', function () {
+                var routeMap = app.getRouteMap(),
+                    pathTo   = expmap.pathTo(routeMap);
+
+                expect(pathTo('nowhere')).to.equal('');
+            });
         });
     });
 });
