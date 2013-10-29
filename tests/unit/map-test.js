@@ -125,7 +125,7 @@ describe('Express Map', function () {
 
             it('should return the routes with the specified annotations', function () {
                 var routeMap = app.getRouteMap({ section: 'blog' });
-                
+
                 expect(Object.keys(routeMap)).to.have.length(2);
                 expect(routeMap).to.contain.keys('blog#index', 'blog#show');
             });
@@ -194,6 +194,9 @@ describe('Express Map', function () {
                     next();
                 });
 
+                // Makes sure `params` has at least one item.
+                app.param('noop', function () { /* no-op for testing */ });
+
                 var paramMap = app.getRouteParams();
 
                 expect(paramMap).to.be.an('object');
@@ -221,9 +224,7 @@ describe('Express Map', function () {
             it('should provide the correct paths given the name and a context', function () {
                 var routeMap = app.getRouteMap(),
                     pathTo   = expmap.pathTo(routeMap),
-                    userPath = pathTo('users#show', {
-                        user: 'clarle'
-                    });
+                    userPath = pathTo('users#show', {user: 'clarle'});
 
                 expect(userPath).to.equal('/users/clarle');
             });
@@ -233,6 +234,23 @@ describe('Express Map', function () {
                     pathTo   = expmap.pathTo(routeMap);
 
                 expect(pathTo('nowhere')).to.equal('');
+            });
+
+            it('should support route `keys` as a String[]', function () {
+                var routeMap = app.getRouteMap(),
+                    pathTo   = expmap.pathTo(routeMap),
+                    userPath = pathTo('users#show', {user: 'clarle'});
+
+                // Mutate each route's `keys` into an array of strings.
+                Object.keys(routeMap).forEach(function (name) {
+                    var route = routeMap[name];
+
+                    route.keys = route.keys.map(function (key) {
+                        return key.name;
+                    });
+                });
+
+                expect(userPath).to.equal('/users/clarle');
             });
         });
     });
