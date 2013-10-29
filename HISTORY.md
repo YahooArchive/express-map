@@ -7,6 +7,8 @@ NEXT
 * __[!]__ Changed `names` annotation to `aliases`. **Note:** The primiary `name`
   annotation still exists and has not been changed. ([#7][]: @clarle)
 
+* Updated `methods` dependency to v0.1.0.
+
 * Added unit tests. ([#5][]: @clarle, @imalberto)
 
 * Added "modown" keyword to package.json. ([#11][])
