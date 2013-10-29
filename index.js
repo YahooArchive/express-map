@@ -144,8 +144,10 @@ function registerParam(name, handler) {
 // -- Helper Functions ---------------------------------------------------------
 
 function getUniqueAliases(aliases) {
-    return Object.keys(aliases.reduce(function (unique, name) {
+    var aliasesHash = aliases.reduce(function (unique, name) {
         if (name) { unique[name] = true; }
         return unique;
-    }, {}));
+    }, {});
+
+    return Object.keys(aliasesHash);
 }
