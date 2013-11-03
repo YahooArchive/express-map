@@ -143,7 +143,7 @@ looks like this:
 ```
 
 And finally, we'll render this object out into our menu with this template:
-```
+```html
 <div class="pure-menu pure-menu-open">
     <ul>
     {{#each nav}}
