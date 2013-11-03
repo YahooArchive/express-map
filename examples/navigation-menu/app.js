@@ -30,27 +30,20 @@ function routePage(path, name, section) {
 
 routePage('/', 'home');
 
-routePage('/sports/', 'sports-home', 'sports');
-routePage('/sports/baseball/', 'baseball', 'sports');
-routePage('/sports/football/', 'football', 'sports');
-routePage('/sports/basketball/', 'basketball', 'sports');
+routePage('/news/', 'news', 'stories');
+routePage('/local/', 'local', 'stories');
+routePage('/finance/', 'finance', 'stories');
 
-routePage('/finance/', 'finance-home', 'finance');
-routePage('/finance/portfolio/', 'portfolio', 'finance');
-routePage('/finance/markets/', 'markets', 'finance');
-routePage('/finance/personal-finance/', 'personal-finance', 'finance');
+routePage('/games/', 'games', 'entertainment');
+routePage('/movies/', 'movies', 'entertainment');
+routePage('/music/', 'music', 'entertainment');
+routePage('/screen/', 'screen', 'entertainment');
 
 // -- Handlebars Helpers --
 
-
-// Deslugify helper: 'personal-finance' => 'Personal Finance'
-hbs.helpers.deslugify = function (name, options) {
-    var words    = name.split('-'),
-        capWords = words.map(function (word) {
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        });
-
-    return capWords.join(' ');
+// Capitalization helper
+hbs.helpers.capitalize = function (name) {
+    return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 // Create a helper out of the `pathTo` function
@@ -73,4 +66,6 @@ app.locals.nav = app.findAll('section').get.reduce(function (sections, route) {
     return sections;
 }, {});
 
+// Start app
 app.listen(3000);
+console.log('App listening on http://localhost:3000');
