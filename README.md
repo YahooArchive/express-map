@@ -100,7 +100,7 @@ flexibility in how you use Express Map. The above is functionally equivalent to:
 ```js
 function routePage(path, name, annotations, callback) {
     app.map(path, name);
-    app.map(path, annotations);
+    app.annotate(path, annotations);
     app.get(path, callback);
 }
 
@@ -221,11 +221,11 @@ and return the contextualized URL path of that route.
 For example, using our routes from before:
 
 ```js
-    var routeMap = app.getRouteMap(),
-        pathTo   = expmap.pathTo(routeMap);
+var routeMap = app.getRouteMap(),
+    pathTo   = expmap.pathTo(routeMap);
 
-    pathTo('blog-post', {post: 'hello-world'});
-    // => '/blog/hello-world'
+pathTo('blog-post', {post: 'hello-world'});
+// => '/blog/hello-world'
 ```
 
 You can take this function, and use it anywhere. A common use case is to turn
