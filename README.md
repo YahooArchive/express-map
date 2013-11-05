@@ -5,9 +5,9 @@ Express Map
 [![Dependency Status](https://gemnasium.com/yahoo/express-map.png)](https://gemnasium.com/yahoo/express-map)
 [![npm Version](https://badge.fury.io/js/express-map.png)](https://npmjs.org/package/express-map)
 
-Named routes and path lookups for Express that can be used on the server, in the 
-browser, and inside your templates. Never hard-code any URL paths in your code
-ever again, or even share your routes between the browser and server!
+Named routes and path lookups for Express that can be used on the server, in 
+the browser, and inside your templates. Never hard-code any URL paths in your 
+code ever again, or even share your routes between the browser and server!
 
 Overview
 --------
@@ -63,7 +63,8 @@ expmap.extend(app);
 once; after the first time the app is extended, the subsequent `extend()` calls
 will be noops.
 
-Once extended, the `app` object will contain three new methods:
+Once extended, the `app` object will contain three new methods as described
+below.
 
 ## Methods
 
@@ -117,15 +118,15 @@ This sets up the mapped route for you, which you'll use in the next functions.
 
 **Note:** You can map the same route more than once with different names, or 
 provide an array as the `name` in `app.map`. This creates **aliases**, where
-you can reference the path by either of the names later on, and it'll return
+you can reference the path by any of the names later on, and it'll return
 the same URL path. However, as we'll see later, each route only has one
 canonical `name`, that you can access as part of the route object.
 
 ### `app.getRouteMap([annotations])`
 
 This function returns the route map object, which contains the route metadata
-serialized into an object that can be used anywhere. If we took the above routes,
-the serialized object would look like this:
+serialized into an object that can be used anywhere. If we took the above 
+routes, the serialized object would look like this:
 
 ```js
 {
@@ -163,17 +164,18 @@ var routeMap = app.getRouteMap({name: 'blog-post'});
 // routeMap => Will contain only the `blog-post` route
 ```
 
-Take a look at the test examples to see what other ways the route map can be
-filtered by annotations.
+Take a look at the test examples to see what other filters can be applied.
 
 ### `app.getRouteParams([routeMap])`
 
 This function returns a mapping of route parameter names to the functions used
 in those route parameters created through the `app.param()` API. 
 
-It takes in an optional parameter, `routeMap`, which is the filtered route map
-object used to search for the specific route parameter logic. If not provided,
-the full route map object (with no annotation filters) will be used.
+It takes in an optional parameter, `routeMap`, which is the route map object
+returned from `app.getRouteMap()`. If provided, then `getRouteParams()` will
+only search through the routes available in the provided route map object.
+
+Otherwise, it will search through all routes available in the application.
 
 It can be used in the following way:
 
