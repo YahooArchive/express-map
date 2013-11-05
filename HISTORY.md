@@ -1,8 +1,8 @@
 Express Map Change History
 ==========================
 
-NEXT
-----
+0.0.3 (2013-11-05)
+------------------
 
 * __[!]__ Changed `names` annotation to `aliases`. **Note:** The primiary `name`
   annotation still exists and has not been changed. ([#7][]: @clarle)
