@@ -3,5 +3,6 @@
 .jshintrc
 .travis.yml
 coverage/
+examples/
 tests/
 node_modules/
