@@ -6,7 +6,7 @@ more details available at [Contributing Code to Mojito][].
 
 Please be sure to sign our [CLA][] before you submit pull requests or otherwise contribute to `express-map`. This protects `express-map` developers, who rely on [express-map's BSD license][].
 
-[express-map's BSD license]: https://github.com/yahoo/express-map/blob/master/LICENSE.md
+[express-map's BSD license]: https://github.com/yahoo/express-map/blob/master/LICENSE
 [CLA]: http://developer.yahoo.com/cocktails/mojito/cla/
 [Mojito]: https://github.com/yahoo/mojito
 [Contributing Code to Mojito]: https://github.com/yahoo/mojito/wiki/Contributing-Code-to-Mojito
