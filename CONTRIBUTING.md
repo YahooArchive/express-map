@@ -1,4 +1,4 @@
-Contributing Code to `express-view`
+Contributing Code to `express-map`
 ----------------------------------
 
 This component follows the same contribution model used by [Mojito][], with
