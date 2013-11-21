@@ -49,10 +49,9 @@
     "npm": ">=1.2.10"
   },
   "scripts": {
-    "test": "istanbul cover -- node_modules/.bin/_mocha tests/unit/*.js --reporter spec",
+    "test": "istanbul cover -- node_modules/mocha/bin/_mocha tests/unit/ --reporter spec",
     "unit": "mocha tests/unit/*.js --reporter spec",
-    "lint": "jshint {.,lib,tests/unit}/*.js",
-    "pretest": "jshint {.,lib,tests/unit}/*.js"
+    "lint": "jshint {.,lib,tests/unit}/*.js"
   },
   "license": "BSD"
 }
