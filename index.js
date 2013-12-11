@@ -57,13 +57,9 @@ function mapRoute(routePath, name) {
 
 function getRouteMap(annotations) {
     /* jshint validthis:true */
-    if (!Array.isArray(annotations)) {
-        annotations = [].slice.call(arguments);
-    }
 
-    // Gather all mapped/named routePaths that have the specified `annotations`.
     var appAnnotations = this.annotations,
-        routes         = this.findAll(annotations.concat('name'));
+        routes         = this.findAll(annotations);
 
     // Creates a mapping of name -> route object. The route objects are shallow
     // copies of a route's primary metadata.
@@ -87,7 +83,7 @@ function getRouteMap(annotations) {
                 path       : route.path,
                 keys       : route.keys,
                 regexp     : route.regexp,
-                annotations: appAnnotations[route.path]
+                annotations: pathAnnotations
             };
 
             // Map the route to all of its `aliases` which includes its `name`.
