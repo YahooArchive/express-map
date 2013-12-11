@@ -20,7 +20,7 @@
     "routes"
   ],
   "dependencies": {
-    "express-annotations": "~0.0.2",
+    "express-annotations": "~0.1.0",
     "methods": "~0.1.0"
   },
   "peerDependencies": {
