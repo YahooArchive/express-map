@@ -6,8 +6,9 @@ See the accompanying LICENSE file for terms.
 
 'use strict';
 
-var annotations = require('express-annotations'),
-    methods     = require('methods'),
+var HTTP_METHODS = require('methods'),
+
+    annotations = require('express-annotations'),
     util        = require('util'),
 
     pathTo = require('./lib/pathto');
@@ -55,19 +56,18 @@ function mapRoute(routePath, name) {
     });
 }
 
-function getRouteMap(annotations) {
+function getRouteMap() {
     /* jshint validthis:true */
-    if (!Array.isArray(annotations)) {
-        annotations = [].slice.call(arguments);
-    }
 
-    // Gather all mapped/named routePaths that have the specified `annotations`.
     var appAnnotations = this.annotations,
-        routes         = this.findAll(annotations.concat('name'));
+        routes;
+
+    // Delegate call to `findAll()` which is provided by express-annotations.
+    routes = this.findAll.apply(this, arguments);
 
     // Creates a mapping of name -> route object. The route objects are shallow
     // copies of a route's primary metadata.
-    return methods.reduce(function (map, method) {
+    return HTTP_METHODS.reduce(function (map, method) {
         var methodRoutes = routes[method];
 
         if (!methodRoutes) { return map; }
@@ -87,7 +87,7 @@ function getRouteMap(annotations) {
                 path       : route.path,
                 keys       : route.keys,
                 regexp     : route.regexp,
-                annotations: appAnnotations[route.path]
+                annotations: pathAnnotations
             };
 
             // Map the route to all of its `aliases` which includes its `name`.
