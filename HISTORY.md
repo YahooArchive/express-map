@@ -1,6 +1,23 @@
 Express Map Change History
 ==========================
 
+NEXT
+----
+
+* Added support for `getRouteMap(function (annotations) {...})` signature. This
+  method now first delegates to express-annotations' `findAll()` method, giving
+  it API parity. ([#4][])
+
+* Added documentation to README. ([#14][] @clarle)
+
+* Fixed test script so it runs on Windows ([#17][] @juandopazo)
+
+
+[#4]: https://github.com/yahoo/express-map/issues/4
+[#14]: https://github.com/yahoo/express-map/issues/14
+[#17]: https://github.com/yahoo/express-map/issues/17
+
+
 0.0.3 (2013-11-05)
 ------------------
 
