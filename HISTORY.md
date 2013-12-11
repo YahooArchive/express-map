@@ -1,8 +1,8 @@
 Express Map Change History
 ==========================
 
-NEXT
-----
+0.1.0 (2013-12-11)
+------------------
 
 * Added support for `getRouteMap(function (annotations) {...})` signature. This
   method now first delegates to express-annotations' `findAll()` method, giving
