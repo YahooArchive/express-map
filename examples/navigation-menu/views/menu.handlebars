@@ -1,0 +1,12 @@
+<div class="pure-menu pure-menu-open">
+    <ul>
+    {{#each nav}}
+       <li class="pure-menu-heading">{{@key}}</li>
+       {{#each this}}
+           <li>
+               <a href="{{ pathTo name }}">{{ capitalize name }}</a>
+           </li>
+       {{/each}}
+    {{/each}}
+    </ul>
+</div>
